@@ -3,10 +3,7 @@ package org.iesvdm;
 import java.io.*;
 import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-
+public class version2 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         double saldo = 1000.0;
@@ -15,6 +12,7 @@ public class Main {
             System.out.println("Menú:");
             System.out.println("1- Retirar fondos");
             System.out.println("2- Ingresar fondos");
+            System.out.println("3- Consulta de movimientos");
             System.out.println("0- Salir");
             System.out.print("Seleccione una opción: ");
             int opcion = scanner.nextInt();
@@ -28,6 +26,7 @@ public class Main {
                     } else {
                         saldo -= retiro;
                         System.out.println("Retiro exitoso. Saldo actual: " + saldo);
+                        registrarMovimiento("Retiro", retiro);
                     }
                     break;
                 case 2:
@@ -35,10 +34,11 @@ public class Main {
                     double ingreso = scanner.nextDouble();
                     saldo += ingreso;
                     System.out.println("Ingreso exitoso. Saldo actual: " + saldo);
+                    registrarMovimiento("Ingreso", ingreso);
                     break;
                 case 3:
-                    // Esta opción será implementada en la versión "cajero v2"
-                    System.out.println("Esta opción estará disponible en la versión 'cajero v2'");
+                    System.out.println("Consulta de movimientos:");
+                    consultarMovimientos();
                     break;
                 case 0:
                     System.out.println("Gracias por usar el cajero. Saldo final: " + saldo);
@@ -49,12 +49,22 @@ public class Main {
         }
     }
 
-
     private static void registrarMovimiento(String tipo, double cantidad) {
-        // todo
+        try (PrintWriter writer = new PrintWriter(new FileWriter("movimientos.txt", true))) {
+            writer.println(tipo + ": " + cantidad);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de movimientos.");
+        }
     }
 
     private static void consultarMovimientos() {
-        // todo
+        try (BufferedReader reader = new BufferedReader(new FileReader("movimientos.txt"))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                System.out.println(linea);
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo de movimientos.");
+        }
     }
 }
